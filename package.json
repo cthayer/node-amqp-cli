@@ -1,0 +1,41 @@
+{
+  "name": "amqp-cli",
+  "version": "1.0.0",
+  "description": "command line tools for interacting with amqp servers like RabbitMQ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cthayer/node-amqp-cli.git"
+  },
+  "keywords": [
+    "amqp",
+    "cli",
+    "command",
+    "line",
+    "tools",
+    "rabbitmq",
+    "publish",
+    "consume",
+    "client"
+  ],
+  "author": "Craig Thayer <cthayer@craigthayer.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cthayer/node-amqp-cli/issues"
+  },
+  "homepage": "https://github.com/cthayer/node-amqp-cli",
+  "dependencies": {
+    "@sazze/amqp": "^1.3.0",
+    "@sazze/liner": "^1.0.1",
+    "command-line-args": "^2.1.6",
+    "lodash": "^4.9.0",
+    "prompt": "^1.0.0"
+  },
+  "bin": {
+    "amqp-consume": "./bin/amqp-consume",
+    "amqp-publish": "./bin/amqp-publish"
+  }
+}

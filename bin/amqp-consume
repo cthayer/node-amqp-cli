@@ -1,0 +1,51 @@
+#!/bin/env node
+
+var _ = require('lodash');
+var Options = require('../lib/options');
+var procUtil = require('../lib/procUtil');
+var Consumer = require('../lib/consumer');
+
+var procOptions = {
+  filename: __filename
+};
+
+// setup the process
+procUtil.setup(procOptions);
+
+var cliOptions = [
+  {name: 'exchange-name', alias: 'e', type: String, description: 'the name of the exchange', group: 'amqp', defaultValue: 'amqp.direct'},
+  {name: 'exchange-type', type: String, description: 'the type of the exchange', group: 'amqp', defaultValue: 'direct'},
+  {name: 'routing-key', alias: 'r', type: String, description: 'the routing key', group: 'amqp', defaultValue: 'amqp.direct'},
+  // consumer specific options
+  {name: 'queue-name', alias: 'q', type: String, description: 'the name of the queue', group: 'consumer', defaultValue: ''}
+];
+
+var usageOptions = {
+  groups: {
+    amqp: {
+      title: 'amqp options'
+    },
+    consumer: 'consumer options'
+  }
+};
+
+var options = new Options(cliOptions, usageOptions);
+
+options.parse(function () {
+  // massage command line options into amqp options
+  var amqpOptions = options.getAmqpOptions();
+
+  amqpOptions.exchange = {
+    name: options.options.amqp['exchange-name'],
+    type: options.options.amqp['exchange-type']
+  };
+
+  amqpOptions.routingKey = options.options.amqp['routing-key'];
+  
+  var consumer = new Consumer(amqpOptions);
+
+  consumer.start();
+
+  process.on('SIGINT', consumer.stop);
+  process.on('SIGTERM', consumer.stop);
+});
