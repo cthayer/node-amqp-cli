@@ -1,0 +1,76 @@
+#!/bin/env node
+
+var _ = require('lodash');
+var Options = require('../lib/options');
+var procUtil = require('../lib/procUtil');
+var Publisher = require('@sazze/amqp').publisher;
+var Liner = require('@sazze/liner');
+
+var procOptions = {
+  filename: __filename
+};
+
+// setup the process
+procUtil.setup(procOptions);
+
+var cliOptions = [
+  {name: 'exchange-name', alias: 'e', type: String, description: 'the name of the exchange', group: 'amqp', defaultValue: 'amqp.direct'},
+  {name: 'exchange-type', type: String, description: 'the type of the exchange', group: 'amqp', defaultValue: 'direct'},
+  {name: 'routing-key', alias: 'r', type: String, description: 'the routing key', group: 'amqp', defaultValue: 'amqp.direct'},
+  // publisher options
+  {name: 'confirm-channel', type: Boolean, description: 'use a confirm channel', group: 'publisher', defaultValue: true}
+];
+
+var usageOptions = {
+  groups: {
+    amqp: {
+      title: 'amqp options'
+    },
+    publisher: 'publisher options'
+  }
+};
+
+var options = new Options(cliOptions, usageOptions);
+
+options.parse(function () {
+  // massage command line options into amqp options
+  var amqpOptions = options.getAmqpOptions();
+
+  amqpOptions.exchange = {
+    name: options.options.amqp['exchange-name'],
+    type: options.options.amqp['exchange-type']
+  };
+
+  amqpOptions.routingKey = options.options.amqp['routing-key'];
+  amqpOptions.confirmChannel = options.options.amqp['confirm-channel'];
+
+  var publisher = new Publisher(amqpOptions);
+
+  publisher.connect();
+
+  process.on('SIGINT', publisher.close.bind(publisher));
+  process.on('SIGTERM', publisher.close.bind(publisher));
+
+  var liner = new Liner();
+
+  liner.on('data', function (data) {
+    publisher.publish(data, {}, amqpOptions.routingKey, function (err) {
+      if (err) {
+        console.error(err.message || err);
+        return;
+      }
+
+      console.log(data);
+    });
+  });
+
+  liner.on('end', function () {
+    publisher.close();
+  });
+
+  liner.on('error', function (err) {
+    console.error(err.message || err);
+  });
+  
+  process.stdin.pipe(liner);
+});
