@@ -1,4 +1,4 @@
-#!/bin/env node
+#!/usr/bin/env node
 
 var _ = require('lodash');
 var Options = require('../lib/options');
