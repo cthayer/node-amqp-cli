@@ -1,6 +1,6 @@
 {
   "name": "amqp-cli",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "command line tools for interacting with amqp servers like RabbitMQ",
   "main": "index.js",
   "scripts": {
