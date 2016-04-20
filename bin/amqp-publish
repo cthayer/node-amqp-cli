@@ -18,7 +18,7 @@ var cliOptions = [
   {name: 'exchange-type', type: String, description: 'the type of the exchange', group: 'amqp', defaultValue: 'direct'},
   {name: 'routing-key', alias: 'r', type: String, description: 'the routing key', group: 'amqp', defaultValue: 'amqp.direct'},
   // publisher options
-  {name: 'confirm-channel', type: Boolean, description: 'use a confirm channel', group: 'publisher', defaultValue: true}
+  {name: 'no-confirm-channel', type: Boolean, description: 'don\'t use a confirm channel', group: 'publisher', defaultValue: false}
 ];
 
 var usageOptions = {
@@ -42,7 +42,7 @@ options.parse(function () {
   };
 
   amqpOptions.routingKey = options.options.amqp['routing-key'];
-  amqpOptions.confirmChannel = options.options.amqp['confirm-channel'];
+  amqpOptions.confirmChannel = !options.options.amqp['no-confirm-channel'];
 
   var publisher = new Publisher(amqpOptions);
 
