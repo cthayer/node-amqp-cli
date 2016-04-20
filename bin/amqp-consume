@@ -41,6 +41,10 @@ options.parse(function () {
   };
 
   amqpOptions.routingKey = options.options.amqp['routing-key'];
+
+  amqpOptions.queue = {
+    name: options.options.consumer['queue-name']
+  };
   
   var consumer = new Consumer(amqpOptions);
 
