@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/cthayer/node-amqp-cli",
   "dependencies": {
-    "@sazze/amqp": "^1.3.0",
+    "@sazze/amqp": "^1.4.0",
     "@sazze/liner": "^1.0.1",
     "command-line-args": "^2.1.6",
     "lodash": "^4.9.0",
